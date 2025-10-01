@@ -1,0 +1,100 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Vendor Dashboard
+    link(rel="stylesheet" href="/css/style.css")
+  body
+    main
+      .dashboard-container
+        // Dashboard Cards (Left)
+        section.cards
+          .card.combined
+            .split
+              .half
+                h3#totalSales.cd-d UGX 50,000,00
+                p.cd Sales
+              .divider
+              .half
+                h3#totalOrders.cd-d UGX 15,000,00
+                p.cd Orders
+
+          .card
+            h3#totalAmount.instock 42,000,000
+            p.cd1 In Stock
+
+          .card
+            h3#totalItems.outofstock 5
+            p.cd1 Out of Stock
+
+        // Add Product Form (Right)
+        section.form-section
+          h2 Add Product
+
+          if error
+            p.alert.error= error
+          if message
+            p.alert.success= message
+
+          form(action="/vendor" method="POST" enctype="multipart/form-data")
+            label
+              input(type="text" placeholder="Product Name" name="name" value=(formData && formData.name ? formData.name : ''))
+              if formErrors && formErrors.name
+                p.input-error= formErrors.name
+
+            label
+              input(type="text" placeholder="Category" name="category" value=(formData && formData.category ? formData.category : ''))
+              if formErrors && formErrors.category
+                p.input-error= formErrors.category
+
+            label
+              input(type="number" placeholder="Price" name="price" min="0.01" step="0.01" value=(formData && formData.price ? formData.price : ''))
+              if formErrors && formErrors.price
+                p.input-error= formErrors.price
+
+            label
+              input(type="number" placeholder="Quantity" name="stock" min="0" value=(formData && formData.stock ? formData.stock : ''))
+              if formErrors && formErrors.stock
+                p.input-error= formErrors.stock
+
+            .row
+              .col
+                label
+                  input(type="text" placeholder="Color" name="color" value=(formData && formData.color ? formData.color : ''))
+                  if formErrors && formErrors.color
+                    p.input-error= formErrors.color
+              .col
+                // Custom file upload button
+                label.custom-file-upload(for="imageUpload") Upload Image
+                input#imageUpload(type="file" name="image" style="display:none;")
+                if formErrors && formErrors.image
+                  p.input-error= formErrors.image
+
+            .form-buttons
+              button.add(type="submit") Add Product
+              button.cancel(type="button" id="cancelBtn") Cancel
+
+      // Products Table
+      section.table-section.ttb
+        if products && products.length
+          table
+            thead
+              tr
+                th ID
+                th Name
+                th Category
+                th Price (UGX)
+                th Quantity
+            tbody
+              each p, index in products
+                tr
+                  td= '#' + (645341 + index)
+                  td= p.name
+                  td= p.category
+                  td #{p.price.toFixed(2)}
+                  td= p.stock
+        else
+          p No products available.
+
+    script(src="/js/vendor.js")
